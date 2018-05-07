@@ -79,6 +79,18 @@
 
     }
 
+    const deleteTask = (id) => {
+        const urlek = `http://tasks.isa.valuepoint.pl/tasks/${id}`
+
+        const toDelete = {
+            method: "DELETE"
+        }
+
+        fetch(urlek, toDelete)
+            .then(response => response.json())
+            .then(data => console.log('it was deleted'))
+    }
+
     const getAllMyTasks = (creator) => {
 
         fetch(`http://tasks.isa.valuepoint.pl/tasks/search/creator/${creator}`)
@@ -93,7 +105,7 @@
                         -od: ${task.creator}<br/>
                         -dla: ${task.assignee}<br/>
                         <button onclick="window.assignTo('${task._id}')">Przypisz do</button>
-                        <button>Usuń</button>
+                        <button onclick="deleteTask('${task._id}')">Usuń</button>
                         </li>`
                 })
                     .join('')}
@@ -102,7 +114,6 @@
                 document.getElementById('tasks').innerHTML = html
             })
     }
-
 
     const getAllMyTasksByAssignee = (assignee) => {
 
@@ -145,10 +156,11 @@
         }
     }
 
+
     setInterval(() => {
         getAllMyTasks('wojcicka.ma@gmail.com')
         getAllMyTasksByAssignee('wojcicka.ma@gmail.com')
-    },5000)
+    },3000)
 
     const assignedToMeTask = (taskId, assignee) => {
 
