@@ -5,11 +5,18 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>api exercise</title>
+
 </head>
 <body>
 
 <h1>My tasks</h1>
+<h2>mooje taaski</h2>
+<div id="tasks"></div>
+
+<h2>przypisane do mnie</h2>
+<div id="assignedTasks"></div>
 
 
 <script>
@@ -22,7 +29,7 @@
 
         fetch('https://tasks.isa.valuepoint.pl/users')
             .then(response => response.json())
-            .then(users => console.log(users))
+            .then(users => console.log("all users ", users))
     }
 
 
@@ -30,22 +37,22 @@
 
         fetch('https://tasks.isa.valuepoint.pl/tasks')
             .then(response => response.json())
-            .then(tasks => console.log(tasks))
+            .then(tasks => console.log("all tasks ", tasks))
     }
 
 
-    const getMyUser = () => {
+    const getMyUser = (id) => {
 
         //w poniższy sposób można zaisać adres do stringa nazywa się to string templates
         // i wówczas zamiast http w fetchu można wpisać zmienną
         //
-        // const url = "http://tasks.isa.valuepoint.pl/users/5aeffe9d6f78ba537f03addf" + "/" + id
+        const url = "http://tasks.isa.valuepoint.pl/users" + "/" + id
         //
         // const _url = `http://tasks.isa.valuepoint.pl/users/${id}`
 
-        fetch("http://tasks.isa.valuepoint.pl/users/5aeffe9d6f78ba537f03addf")
+        fetch(url)
             .then(response => response.json())
-            .then(myId => console.log(myId))
+            .then(myId => console.log("my id ", myId))
     }
 
 
@@ -72,11 +79,63 @@
 
     }
 
+    const getAllMyTasks = (creator) => {
+
+        fetch(`http://tasks.isa.valuepoint.pl/tasks/search/creator/${creator}`)
+            .then(response => response.json())
+            .then(mojeTasks => {
+                console.log("moje taski ", mojeTasks)
+
+                const html = `<ul>
+                    ${mojeTasks.data.map((task) => {
+                    return `<li>
+                        tytuł: ${task.title}<br/>
+                        -od: ${task.creator}<br/>
+                        -dla: ${task.assignee}<br/>
+                        <button>Przypisz do</button>
+                        <button>Usuń</button>
+                        </li>`
+                })
+                    .join('')}
+                    </ul>`;
+
+                document.getElementById('tasks').innerHTML = html;
+            })
+    }
+
+    const getAllMyTasksByAssignee = (assignee) => {
+
+        fetch(`http://tasks.isa.valuepoint.pl/tasks/search/assignee/${assignee}`)
+            .then(response => response.json())
+            .then(assignedToMeTasks => {
+
+                console.log("przypisane do mnie taski ", assignedToMeTasks)
+
+                const html = `<ul>
+                    ${assignedToMeTasks.data.map((task) => {
+                    return `<li> tytuł: ${task.title}<br/>
+                        -od: ${task.creator}<br/>
+                        -dla: ${task.assignee}<br/>
+                        <button>Przypisz do</button>
+                        <button>Usuń</button>
+                        </li>`
+                })
+                    .join('')}
+                    </ul>`;
+
+                document.getElementById('assignedTasks').innerHTML = html;
+            })
+    }
+
 
     getAllTasks()
     getAllUsers()
-    getMyUser()
-    addTaskToUser("Magda","spr sth")
+    getMyUser('5aeffe9d6f78ba537f03addf')
+    // addTaskToUser("wojcicka.ma@gmail.com","spr sth 2.0")
+    getAllMyTasks('wojcicka.ma@gmail.com')
+    getAllMyTasksByAssignee('wojcicka.ma@gmail.com')
+
+
 </script>
 
 
