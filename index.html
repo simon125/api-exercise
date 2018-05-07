@@ -21,7 +21,7 @@
 
 <script>
 
-    console.log('fetch', window.fetch)
+    console.log('fetch', window.fetch);
 
 
     const getAllUsers = () => {
@@ -75,7 +75,7 @@
         fetch(url, fetchconfig)
 
             .then(response => response.json())
-            .then(data => console.log('getMyUser', data))
+            .then(data => console.log('getMyUser ', data))
 
     }
 
@@ -92,16 +92,17 @@
                         tytuł: ${task.title}<br/>
                         -od: ${task.creator}<br/>
                         -dla: ${task.assignee}<br/>
-                        <button>Przypisz do</button>
+                        <button onclick="window.assignTo('${task._id}')">Przypisz do</button>
                         <button>Usuń</button>
                         </li>`
                 })
                     .join('')}
-                    </ul>`;
+                    </ul>`
 
-                document.getElementById('tasks').innerHTML = html;
+                document.getElementById('tasks').innerHTML = html
             })
     }
+
 
     const getAllMyTasksByAssignee = (assignee) => {
 
@@ -113,6 +114,7 @@
 
                 const html = `<ul>
                     ${assignedToMeTasks.data.map((task) => {
+
                     return `<li> tytuł: ${task.title}<br/>
                         -od: ${task.creator}<br/>
                         -dla: ${task.assignee}<br/>
@@ -121,10 +123,38 @@
                         </li>`
                 })
                     .join('')}
-                    </ul>`;
+                    </ul>`
 
-                document.getElementById('assignedTasks').innerHTML = html;
+                document.getElementById('assignedTasks').innerHTML = html
             })
+    }
+
+    window.assignTo = (task_id) => {
+
+        const assignee = prompt('do kogo ma być przypisany task?')
+
+        const url = `http://tasks.isa.valuepoint.pl/tasks/${task_id}/assing-to/${assignee}`
+
+        if (assignee.length) {
+            fetch(url)
+                .then(d => d.json())
+                .then((data) => {
+                console.log('assignTo', data)
+                    alert('assigned to ' + assignee)
+            })
+        }
+    }
+
+    setInterval(() => {
+        getAllMyTasks('wojcicka.ma@gmail.com')
+        getAllMyTasksByAssignee('wojcicka.ma@gmail.com')
+    },5000)
+
+    const assignedToMeTask = (taskId, assignee) => {
+
+        fetch(`http://tasks.isa.valuepoint.pl/tasks/${taskId}/assing-to/${assignee}`)
+            .then(response => response.json())
+            .then(tasker => console.log(tasker))
     }
 
 
@@ -132,8 +162,10 @@
     getAllUsers()
     getMyUser('5aeffe9d6f78ba537f03addf')
     // addTaskToUser("wojcicka.ma@gmail.com","spr sth 2.0")
+    assignedToMeTask('5af01d086f78ba537f03ae34', 'wojcicka.ma@gmail.com')
     getAllMyTasks('wojcicka.ma@gmail.com')
     getAllMyTasksByAssignee('wojcicka.ma@gmail.com')
+    // window.assignTo('5af01d016f78ba537f03ae08')
 
 
 </script>
