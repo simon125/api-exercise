@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>api exercise</title>
+</head>
+<body>
+
+<h1>My tasks</h1>
+
+
+<script>
+
+    console.log('fetch', window.fetch)
+
+
+    const getAllUsers = () => {
+
+
+        fetch('https://tasks.isa.valuepoint.pl/users')
+            .then(response => response.json())
+            .then(users => console.log(users))
+    }
+
+
+    const getAllTasks = () => {
+
+        fetch('https://tasks.isa.valuepoint.pl/tasks')
+            .then(response => response.json())
+            .then(tasks => console.log(tasks))
+    }
+
+
+    const getMyUser = () => {
+
+        //w poniższy sposób można zaisać adres do stringa nazywa się to string templates
+        // i wówczas zamiast http w fetchu można wpisać zmienną
+        //
+        // const url = "http://tasks.isa.valuepoint.pl/users/5aeffe9d6f78ba537f03addf" + "/" + id
+        //
+        // const _url = `http://tasks.isa.valuepoint.pl/users/${id}`
+
+        fetch("http://tasks.isa.valuepoint.pl/users/5aeffe9d6f78ba537f03addf")
+            .then(response => response.json())
+            .then(myId => console.log(myId))
+    }
+
+
+    const addTaskToUser = (creator, title) => {
+        const url = "https://tasks.isa.valuepoint.pl/tasks/add"
+
+        const task = {
+            creator: creator,
+            title: title
+        }
+
+        const fetchconfig = {
+            method: "PUT",
+            body: JSON.stringify(task),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+
+        fetch(url, fetchconfig)
+
+            .then(response => response.json())
+            .then(data => console.log('getMyUser', data))
+
+    }
+
+
+    getAllTasks()
+    getAllUsers()
+    getMyUser()
+    addTaskToUser("Magda","spr sth")
+</script>
+
+
+</body>
+</html>
